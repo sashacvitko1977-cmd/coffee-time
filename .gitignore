@@ -1,0 +1,15 @@
+node_modules
+.next
+out
+.env*.local
+.DS_Store
+*.tsbuildinfo
+next-env.d.ts
+
+# debug extracts
+public/media/frames/
+public/media/vframes/
+public/media/match-*.jpg
+
+public/media/cofe.mp4
+
