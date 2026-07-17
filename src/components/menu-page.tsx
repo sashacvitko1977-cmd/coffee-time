@@ -1,68 +1,23 @@
 "use client";
 
+import { useCallback, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-
-const ITEMS = [
-  {
-    name: "Эспрессо",
-    desc: "Плотный, с карамельной сладостью",
-    price: "180 ₽",
-    img: "/media/menu-1.jpg",
-  },
-  {
-    name: "Капучино",
-    desc: "Бархатная пенка, баланс молока",
-    price: "280 ₽",
-    img: "/media/menu-2.jpg",
-    featured: true,
-  },
-  {
-    name: "Фильтр дня",
-    desc: "Сезонный лот, светлая обжарка",
-    price: "320 ₽",
-    img: "/media/menu-3.jpg",
-  },
-  {
-    name: "Флэт уайт",
-    desc: "Двойной шот, тонкий слой молока",
-    price: "300 ₽",
-    img: "/media/menu-4.jpg",
-  },
-  {
-    name: "Латте",
-    desc: "Мягкий, сливочный, на каждый день",
-    price: "290 ₽",
-    img: "/media/menu-5.jpg",
-  },
-  {
-    name: "Матча латте",
-    desc: "Церемониальная матча, чистый вкус",
-    price: "360 ₽",
-    img: "/media/menu-6.jpg",
-  },
-  {
-    name: "Какао",
-    desc: "Горячий шоколад без лишней сладости",
-    price: "260 ₽",
-    img: "/media/menu-7.jpg",
-  },
-  {
-    name: "Круассан",
-    desc: "Свежая выпечка каждое утро",
-    price: "220 ₽",
-    img: "/media/menu-8.jpg",
-  },
-  {
-    name: "Чизкейк",
-    desc: "Нежный, к фильтру или капучино",
-    price: "340 ₽",
-    img: "/media/menu-9.jpg",
-  },
-];
+import { MENU_ITEMS, type MenuItem } from "@/data/menu";
+import { ProductModal } from "@/components/product-modal";
 
 export function MenuPage() {
+  const [active, setActive] = useState<MenuItem | null>(null);
+
+  const openItem = useCallback((item: MenuItem) => {
+    setActive(item);
+  }, []);
+
+  const closeItem = useCallback(() => {
+    setActive(null);
+  }, []);
+
   return (
     <section className="pb-16 pt-6 sm:pb-20 sm:pt-8">
       <div className="container-site">
@@ -79,21 +34,23 @@ export function MenuPage() {
             Меню
           </h1>
           <p className="mt-3 max-w-lg text-base site-text-muted sm:text-lg">
-            Короткий список — только то, что готовим каждый день. Зерно,
-            молоко, честный вкус.
+            Нажмите на карточку, чтобы узнать больше. Короткий список — только
+            то, что готовим каждый день.
           </p>
           <div className="mt-5 h-px w-16 bg-amber/70" />
         </motion.div>
 
         <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
-          {ITEMS.map((item, i) => (
-            <motion.article
-              key={item.name}
+          {MENU_ITEMS.map((item, i) => (
+            <motion.button
+              key={item.id}
+              type="button"
               initial={{ opacity: 0, y: 14 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ delay: Math.min(i * 0.04, 0.28), duration: 0.35 }}
-              className={`site-panel group overflow-hidden ${
+              onClick={() => openItem(item)}
+              className={`site-panel group overflow-hidden text-left transition hover:-translate-y-0.5 hover:ring-1 hover:ring-amber/35 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber ${
                 item.featured ? "ring-1 ring-amber/40" : ""
               }`}
             >
@@ -117,12 +74,15 @@ export function MenuPage() {
                     {item.name}
                   </h2>
                   <p className="mt-1 text-sm site-text-muted">{item.desc}</p>
+                  <p className="mt-2 text-xs font-medium text-amber/80">
+                    Подробнее →
+                  </p>
                 </div>
                 <span className="shrink-0 rounded-full bg-amber/20 px-3 py-1 text-sm font-semibold text-amber">
                   {item.price}
                 </span>
               </div>
-            </motion.article>
+            </motion.button>
           ))}
         </div>
 
@@ -143,6 +103,8 @@ export function MenuPage() {
           </Link>
         </motion.div>
       </div>
+
+      <ProductModal item={active} onClose={closeItem} />
     </section>
   );
 }
