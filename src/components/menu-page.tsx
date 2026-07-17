@@ -2,7 +2,6 @@
 
 import { useCallback, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { MENU_ITEMS, type MenuItem } from "@/data/menu";
 import { ProductModal } from "@/components/product-modal";
@@ -86,22 +85,6 @@ export function MenuPage() {
           ))}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="mt-14 flex flex-col items-start justify-between gap-4 border-t border-white/10 pt-8 sm:flex-row sm:items-center"
-        >
-          <p className="font-display text-xl text-milk sm:text-2xl">
-            Ждём вас в зале
-          </p>
-          <Link
-            href="/contacts"
-            className="text-sm font-semibold text-amber transition hover:text-gold"
-          >
-            Контакты →
-          </Link>
-        </motion.div>
       </div>
 
       <ProductModal item={active} onClose={closeItem} />
