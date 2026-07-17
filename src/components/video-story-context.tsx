@@ -125,27 +125,36 @@ export function VideoStoryProvider({ children }: { children: React.ReactNode }) 
 
         playingRef.current = true;
         setPlaying(true);
-        v.playbackRate = 1;
 
-        // Ease-out window before the stop frame (seconds)
-        const EASE_LEN = 0.85;
+        // Faster segments; gentle end without per-frame rate thrash (that caused lag)
+        const SPEED = 2.05;
+        const EASE_A = 0.42; // start soft slowdown (video-seconds remaining)
+        const EASE_B = 0.14; // final soft landing
+        v.playbackRate = SPEED;
 
         await new Promise<void>((resolve) => {
           let settled = false;
           let raf = 0;
+          let rateStep = 0; // 0 full, 1 mid, 2 soft
 
           const finish = () => {
             if (settled) return;
             settled = true;
             cancelAnimationFrame(raf);
             v.pause();
-            v.playbackRate = 1;
+            // Soft stop: only nudge if slightly past/short — avoid hard seek jump
             try {
-              v.currentTime = target;
-              setCurrentTime(target);
+              const drift = Math.abs(v.currentTime - target);
+              if (drift > 0.04 && drift < 0.2) {
+                v.currentTime = target;
+              } else if (v.currentTime > target) {
+                v.currentTime = target;
+              }
+              setCurrentTime(v.currentTime);
             } catch {
               /* ignore */
             }
+            v.playbackRate = 1;
             v.removeEventListener("ended", onEnded);
             playingRef.current = false;
             setPlaying(false);
@@ -154,24 +163,34 @@ export function VideoStoryProvider({ children }: { children: React.ReactNode }) 
 
           const onEnded = () => finish();
 
+          const setRate = (step: number, rate: number) => {
+            if (step === rateStep) return;
+            rateStep = step;
+            try {
+              v.playbackRate = rate;
+            } catch {
+              /* ignore */
+            }
+          };
+
           const tick = () => {
             if (settled) return;
             const t = v.currentTime;
             setCurrentTime(t);
             const remaining = target - t;
 
-            if (remaining <= 0.02) {
+            if (remaining <= 0.035) {
               finish();
               return;
             }
 
-            // Плавное замедление к концу отрезка
-            if (remaining < EASE_LEN) {
-              const x = remaining / EASE_LEN; // 1 → 0
-              // smooth ease-out rate: ~1.0 → ~0.18
-              v.playbackRate = 0.18 + 0.82 * (x * x);
+            // 2-step ease-out only (no every-frame rate changes → no stutter)
+            if (remaining < EASE_B) {
+              setRate(2, Math.max(0.55, SPEED * 0.38));
+            } else if (remaining < EASE_A) {
+              setRate(1, Math.max(0.85, SPEED * 0.62));
             } else {
-              v.playbackRate = 1;
+              setRate(0, SPEED);
             }
 
             raf = requestAnimationFrame(tick);
@@ -185,7 +204,7 @@ export function VideoStoryProvider({ children }: { children: React.ReactNode }) 
           }
           raf = requestAnimationFrame(tick);
 
-          window.setTimeout(finish, 16000);
+          window.setTimeout(finish, 12000);
         });
       });
 

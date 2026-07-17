@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, Coffee } from "lucide-react";
+import { Coffee } from "lucide-react";
 import Link from "next/link";
 import { CoffeeBeans } from "./coffee-beans";
 import {
@@ -200,10 +200,6 @@ export function MainStory() {
               <p className="mt-4 max-w-lg text-base text-milk/90 sm:text-xl">
                 Время замедлиться. Свежая обжарка и чашка, которая остаётся с
                 вами на весь день.
-              </p>
-              <p className="mt-8 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-milk/45">
-                <ChevronDown size={16} className="animate-bounce" aria-hidden />
-                Крутите колёсико
               </p>
             </motion.div>
           )}
