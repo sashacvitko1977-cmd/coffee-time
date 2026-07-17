@@ -46,7 +46,7 @@ export function VideoStoryProvider({ children }: { children: React.ReactNode }) 
   const queueRef = useRef<Promise<void>>(Promise.resolve());
   const [phase, setPhase] = useState<Phase>(0);
   const [playing, setPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(VIDEO_MARKS.plan1);
+  const [currentTime, setCurrentTime] = useState<number>(VIDEO_MARKS.plan1);
 
   const registerVideo = useCallback((el: HTMLVideoElement | null) => {
     videoRef.current = el;
