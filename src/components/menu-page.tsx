@@ -49,17 +49,18 @@ export function MenuPage() {
               viewport={{ once: true, margin: "-40px" }}
               transition={{ delay: Math.min(i * 0.04, 0.28), duration: 0.35 }}
               onClick={() => openItem(item)}
-              className={`site-panel group overflow-hidden text-left transition hover:-translate-y-0.5 hover:ring-1 hover:ring-amber/35 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber ${
+              className={`site-panel group flex w-full flex-col overflow-hidden text-left transition hover:-translate-y-0.5 hover:ring-1 hover:ring-amber/35 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber ${
                 item.featured ? "ring-1 ring-amber/40" : ""
               }`}
             >
-              <div className="relative aspect-[5/4] overflow-hidden sm:aspect-[4/3]">
+              <div className="relative h-44 w-full overflow-hidden bg-[#2a241c] sm:h-52">
                 <Image
                   src={item.img}
                   alt={item.name}
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover transition duration-500 group-hover:scale-105"
+                  className="object-cover object-center transition duration-500 group-hover:scale-105"
+                  style={{ objectFit: "cover", objectPosition: "center" }}
                 />
                 {item.featured && (
                   <span className="absolute left-3 top-3 rounded-full bg-amber px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-ink">

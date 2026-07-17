@@ -86,13 +86,14 @@ export function ProductModal({ item, onClose }: Props) {
               <X size={20} strokeWidth={2.25} />
             </button>
 
-            <div className="relative aspect-[4/3] w-full shrink-0 sm:aspect-[16/10]">
+            <div className="relative h-52 w-full shrink-0 overflow-hidden bg-[#2a241c] sm:h-60">
               <Image
                 src={item.img}
                 alt={item.name}
                 fill
                 sizes="(max-width: 640px) 100vw, 512px"
-                className="object-cover"
+                className="object-cover object-center"
+                style={{ objectFit: "cover", objectPosition: "center" }}
                 priority
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#1a1814] via-transparent to-transparent" />
