@@ -1,18 +1,20 @@
 import type { Metadata, Viewport } from "next";
-import { Manrope, Playfair_Display } from "next/font/google";
+import { Montserrat, Roboto } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
-const playfair = Playfair_Display({
+const montserrat = Montserrat({
   subsets: ["latin", "cyrillic"],
-  variable: "--font-playfair",
+  variable: "--font-montserrat",
   display: "swap",
+  weight: ["500", "600", "700"],
 });
 
-const manrope = Manrope({
+const roboto = Roboto({
   subsets: ["latin", "cyrillic"],
-  variable: "--font-manrope",
+  variable: "--font-roboto",
   display: "swap",
+  weight: ["400", "500", "700"],
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -123,7 +125,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru" suppressHydrationWarning>
-      <body className={`${playfair.variable} ${manrope.variable} font-body antialiased`}>
+      <body className={`${montserrat.variable} ${roboto.variable} font-body antialiased`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

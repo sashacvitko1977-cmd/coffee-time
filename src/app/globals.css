@@ -51,7 +51,7 @@ html {
 body {
   background: #1e1e1e;
   color: var(--fg);
-  font-family: var(--font-manrope), system-ui, sans-serif;
+  font-family: var(--font-roboto), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }

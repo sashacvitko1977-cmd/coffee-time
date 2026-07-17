@@ -18,8 +18,8 @@ const config: Config = {
         amber: "#E8954A",
       },
       fontFamily: {
-        display: ["var(--font-playfair)", "Georgia", "serif"],
-        body: ["var(--font-manrope)", "system-ui", "sans-serif"],
+        display: ["var(--font-montserrat)", "system-ui", "sans-serif"],
+        body: ["var(--font-roboto)", "system-ui", "sans-serif"],
       },
       borderRadius: {
         soft: "1.25rem",
