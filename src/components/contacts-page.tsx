@@ -168,9 +168,9 @@ export function ContactsPage() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.14, duration: 0.4 }}
-            className="site-panel overflow-hidden"
+            className="site-panel h-fit self-start overflow-hidden"
           >
-            <div className="relative aspect-[4/3] w-full sm:min-h-[380px] sm:aspect-auto">
+            <div className="relative aspect-[4/3] w-full">
               <iframe
                 title="Карта: Coffee Time"
                 className="map-frame absolute inset-0 h-full w-full border-0"
@@ -179,7 +179,7 @@ export function ContactsPage() {
                 src="https://www.openstreetmap.org/export/embed.html?bbox=37.615%2C55.752%2C37.635%2C55.762&layer=mapnik&marker=55.757%2C37.625"
               />
             </div>
-            <div className="border-t border-white/10 px-5 py-3 text-center">
+            <div className="border-t border-white/10 px-4 py-2.5 text-center">
               <a
                 href="https://www.openstreetmap.org/?mlat=55.757&mlon=37.625#map=16/55.757/37.625"
                 target="_blank"
