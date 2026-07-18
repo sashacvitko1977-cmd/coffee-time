@@ -125,6 +125,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru" suppressHydrationWarning>
+      <head>
+        {/* Kick video assets early so mobile paints the first frame ASAP */}
+        <link
+          rel="preload"
+          href="/media/video-start.jpg"
+          as="image"
+          type="image/jpeg"
+        />
+        <link rel="preload" href="/media/cofe-scrub.mp4" as="video" type="video/mp4" />
+      </head>
       <body className={`${montserrat.variable} ${roboto.variable} font-body antialiased`}>
         <script
           type="application/ld+json"
