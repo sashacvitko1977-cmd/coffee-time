@@ -212,9 +212,9 @@ export function MainStory() {
           className="pointer-events-none absolute inset-0 z-20"
           aria-hidden={!showCoffee}
         >
-          {/* Thin line from card toward the cup */}
+          {/* Thin line from card toward the cup — lower on mobile, centered on desktop */}
           <div
-            className="absolute top-1/2 h-px origin-left bg-amber shadow-[0_0_6px_rgba(232,149,74,0.5)]"
+            className="absolute top-[62%] h-px origin-left bg-amber shadow-[0_0_6px_rgba(232,149,74,0.5)] sm:top-1/2"
             aria-hidden="true"
             style={{
               opacity: coffeeOpacity,
@@ -224,9 +224,9 @@ export function MainStory() {
             }}
           />
 
-          {/* Info — left, fades in near end of first segment */}
+          {/* Info — a bit lower on phone so it sits with the cup; PC unchanged */}
           <div
-            className="pointer-events-auto absolute left-0 top-1/2 w-full max-w-[min(100%,22rem)] -translate-y-1/2 px-4 sm:left-6 sm:px-0 md:left-10 lg:left-14"
+            className="pointer-events-auto absolute left-0 top-[62%] w-full max-w-[min(100%,22rem)] px-4 sm:left-6 sm:top-1/2 sm:px-0 md:left-10 lg:left-14"
             style={{
               opacity: coffeeOpacity,
               transform: `translateY(-50%) translateY(${(1 - coffeeOpacity) * 18}px)`,
