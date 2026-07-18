@@ -1,24 +1,44 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useVideoStory, MARKS } from "./video-story-context";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useVideoStory, MARKS, VIDEO_MARKS } from "./video-story-context";
+
+const STILLS = [
+  "/media/plan1.jpg",
+  "/media/plan2.jpg",
+  "/media/plan3.jpg",
+] as const;
 
 /**
- * Fixed background video for the story page.
- * Poster always sits underneath so mobile never shows a black void while
- * the scrub video is still downloading / seeking the first painted frame.
+ * Fixed background for the story page.
+ *
+ * Mobile-safe stack:
+ *  1) Still photo matching the current story beat (always visible instantly)
+ *  2) Video faded in ONLY after a real frame is painted (never black over the still)
+ *  3) Dim overlays on top
  */
 export function VideoBackground() {
-  const { reduce, registerVideo } = useVideoStory();
+  const { reduce, registerVideo, phase, currentTime, playing } = useVideoStory();
   const ref = useRef<HTMLVideoElement>(null);
   const [frameReady, setFrameReady] = useState(false);
+  const readyRef = useRef(false);
+
+  const markReady = useCallback(() => {
+    if (readyRef.current) return;
+    readyRef.current = true;
+    setFrameReady(true);
+  }, []);
 
   useEffect(() => {
     registerVideo(ref.current);
     return () => registerVideo(null);
   }, [registerVideo]);
 
-  // Force a painted frame on iOS/Android: poster stays until video is ready.
+  // When the story actually plays a segment, video has a painted frame.
+  useEffect(() => {
+    if (playing) markReady();
+  }, [playing, markReady]);
+
   useEffect(() => {
     if (reduce) return;
     const v = ref.current;
@@ -26,7 +46,7 @@ export function VideoBackground() {
 
     let cancelled = false;
 
-    const waitEvent = (type: string, ms = 4000) =>
+    const waitEvent = (type: string, ms = 5000) =>
       new Promise<void>((resolve) => {
         let done = false;
         const finish = () => {
@@ -39,92 +59,163 @@ export function VideoBackground() {
         window.setTimeout(finish, ms);
       });
 
-    const paintFirstFrame = async () => {
+    const confirmPaint = () =>
+      new Promise<void>((resolve) => {
+        const anyV = v as HTMLVideoElement & {
+          requestVideoFrameCallback?: (
+            cb: () => void
+          ) => number;
+        };
+        if (typeof anyV.requestVideoFrameCallback === "function") {
+          anyV.requestVideoFrameCallback(() => resolve());
+          window.setTimeout(resolve, 800);
+        } else {
+          // One rAF pair after play is usually enough
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => resolve());
+          });
+        }
+      });
+
+    const unlockFrame = async () => {
       try {
+        v.muted = true;
+        v.defaultMuted = true;
+        v.playsInline = true;
+        v.setAttribute("playsinline", "");
+        v.setAttribute("webkit-playsinline", "");
+        v.preload = "auto";
+
+        // Kick network early
+        try {
+          v.load();
+        } catch {
+          /* ignore */
+        }
+
         if (v.readyState < 1) {
           await waitEvent("loadedmetadata");
         }
         if (cancelled) return;
 
-        // Land on story start frame
         try {
           v.currentTime = MARKS.start;
         } catch {
           /* ignore */
         }
-        await waitEvent("seeked", 2500);
+        await waitEvent("seeked", 3000);
         if (cancelled) return;
 
-        // iOS/Android often won't paint a paused video until play() once
-        v.muted = true;
+        // Many mobile browsers only paint after a real play()
         try {
           const p = v.play();
           if (p) await p;
           if (cancelled) return;
-          // One frame is enough — freeze again at story start
+          await confirmPaint();
+          if (cancelled) return;
           v.pause();
           try {
             v.currentTime = MARKS.start;
           } catch {
             /* ignore */
           }
+          if (!cancelled) markReady();
         } catch {
-          // Autoplay blocked — poster remains until data arrives
+          // Autoplay blocked — still stays on top; ready on first user-driven play
         }
-
-        if (v.readyState < 2) {
-          await waitEvent("loadeddata", 3000);
-        }
-        if (cancelled) return;
-
-        setFrameReady(true);
       } catch {
-        if (!cancelled) setFrameReady(true);
+        /* keep still visible */
       }
     };
 
-    void paintFirstFrame();
+    void unlockFrame();
 
-    // Never leave poster forever if events are flaky
-    const fallback = window.setTimeout(() => {
-      if (!cancelled) setFrameReady(true);
-    }, 6000);
+    const onPlaying = () => markReady();
+    const onLoadedData = () => {
+      // Only mark ready if we already have dimensions (a real frame exists)
+      if (v.videoWidth > 0 && v.readyState >= 2) {
+        // Still need a paint on some iOS versions — try silently
+        void (async () => {
+          try {
+            const p = v.play();
+            if (p) await p;
+            v.pause();
+            try {
+              v.currentTime = MARKS.start;
+            } catch {
+              /* ignore */
+            }
+            markReady();
+          } catch {
+            /* ignore */
+          }
+        })();
+      }
+    };
+
+    v.addEventListener("playing", onPlaying);
+    v.addEventListener("loadeddata", onLoadedData);
 
     return () => {
       cancelled = true;
-      window.clearTimeout(fallback);
+      v.removeEventListener("playing", onPlaying);
+      v.removeEventListener("loadeddata", onLoadedData);
     };
-  }, [reduce]);
+  }, [reduce, markReady]);
+
+  // Still image for current beat (instant, no black gap)
+  const stillIndex =
+    currentTime >= VIDEO_MARKS.plan3 - 0.05
+      ? 2
+      : currentTime >= VIDEO_MARKS.plan2 - 0.05
+        ? 1
+        : phase >= 2
+          ? 2
+          : phase >= 1
+            ? 1
+            : 0;
+  const stillSrc = STILLS[stillIndex] ?? STILLS[0];
 
   return (
     <div
-      className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+      className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-[#1e1e1e]"
       aria-hidden="true"
     >
-      {/* Poster always present — fills screen until video paints */}
+      {/* Always-on still — never a blank screen on mobile */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/media/cof.jpg"
+        key={stillSrc}
+        src={stillSrc}
         alt=""
         className="absolute inset-0 h-full w-full object-cover"
         decoding="async"
         fetchPriority="high"
       />
 
+      {/* Fallback photo if plan stills fail */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/media/cof.jpg"
+        alt=""
+        className="absolute inset-0 -z-[1] h-full w-full object-cover"
+        decoding="async"
+      />
+
       {!reduce && (
         <video
           ref={ref}
-          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ease-out ${
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-out ${
             frameReady ? "opacity-100" : "opacity-0"
           }`}
           src="/media/cofe-scrub.mp4"
           muted
           playsInline
           preload="auto"
+          // Keep transparent so any unpainted frame doesn't paint black over stills
+          style={{ backgroundColor: "transparent" }}
         />
       )}
 
-      {/* Lighter center so the cup stays visible for the pointer */}
       <div className="absolute inset-0 bg-ink/40" />
       <div className="absolute inset-0 bg-gradient-to-b from-ink/30 via-transparent to-ink/45" />
     </div>
