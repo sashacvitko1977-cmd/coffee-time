@@ -66,8 +66,8 @@ body {
 }
 
 /*
- * Menu cards: steady amber glow driven by .menu-card-lit (JS pointer state).
- * Smooth ramp in/out (~0.55s). Stays fully lit until pointer leaves — no pulse.
+ * Menu cards: white glow via .menu-card-lit (JS pointer state only).
+ * No permanent glow on featured/"Хит" — only while hovered/touched.
  */
 .menu-card {
   border-color: rgba(255, 255, 255, 0.15);
@@ -83,12 +83,12 @@ body {
 
 .menu-card.menu-card-lit,
 .menu-card:focus-visible {
-  border-color: rgba(232, 149, 74, 0.6);
-  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.18);
   box-shadow:
-    0 0 0 1px rgba(232, 149, 74, 0.45),
-    0 0 24px rgba(232, 149, 74, 0.42),
-    0 0 56px rgba(232, 149, 74, 0.22),
+    0 0 0 1px rgba(255, 255, 255, 0.4),
+    0 0 22px rgba(255, 255, 255, 0.35),
+    0 0 52px rgba(255, 255, 255, 0.18),
     0 18px 50px rgba(0, 0, 0, 0.28);
   transform: translateY(-3px);
   outline: none;

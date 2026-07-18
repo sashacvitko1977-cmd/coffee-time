@@ -56,7 +56,7 @@ export function MenuPage() {
 
         <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
           {MENU_ITEMS.map((item, i) => {
-            const lit = litId === item.id || !!item.featured;
+            const lit = litId === item.id;
             return (
               <motion.button
                 key={item.id}
@@ -66,7 +66,7 @@ export function MenuPage() {
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ delay: Math.min(i * 0.04, 0.28), duration: 0.35 }}
                 onClick={() => openItem(item)}
-                onPointerEnter={(e) => lightOn(item.id)}
+                onPointerEnter={() => lightOn(item.id)}
                 onPointerDown={() => lightOn(item.id)}
                 onPointerLeave={(e) => lightOffIfMouse(item.id, e.pointerType)}
                 className={`site-panel menu-card group flex w-full flex-col overflow-hidden text-left ${
