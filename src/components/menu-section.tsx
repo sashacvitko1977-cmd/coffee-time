@@ -126,7 +126,7 @@ export function MenuSection() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.03, duration: 0.35 }}
-                className="site-panel menu-card group overflow-hidden"
+                className="site-panel menu-card group overflow-hidden cursor-default"
               >
                 <div className="relative aspect-[5/4] overflow-hidden sm:aspect-[4/3]">
                   <Image

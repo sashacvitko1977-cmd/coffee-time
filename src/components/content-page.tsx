@@ -154,7 +154,7 @@ export function ContentPage() {
                     delay: menuOn ? Math.min(i * 0.03, 0.25) : 0,
                     duration: 0.3,
                   }}
-                  className="site-panel menu-card group overflow-hidden"
+                  className="site-panel menu-card group overflow-hidden cursor-default"
                 >
                   <div className="relative aspect-[5/4] overflow-hidden sm:aspect-[4/3]">
                     <Image

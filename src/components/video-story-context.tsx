@@ -53,17 +53,23 @@ export function VideoStoryProvider({ children }: { children: React.ReactNode }) 
     if (el) {
       el.pause();
       el.muted = true;
+      el.defaultMuted = true;
       el.playsInline = true;
+      el.preload = "auto";
+      // Seek only after we can decode — avoids flashing unrelated frames
       const setStart = () => {
-        try {
-          el.currentTime = VIDEO_MARKS.plan1;
-          setCurrentTime(VIDEO_MARKS.plan1);
-        } catch {
-          /* ignore */
-        }
+        const apply = () => {
+          try {
+            el.currentTime = VIDEO_MARKS.plan1;
+            setCurrentTime(VIDEO_MARKS.plan1);
+          } catch {
+            /* ignore */
+          }
+        };
+        if (el.readyState >= 1) apply();
+        else el.addEventListener("loadedmetadata", apply, { once: true });
       };
-      if (el.readyState >= 1) setStart();
-      else el.addEventListener("loadedmetadata", setStart, { once: true });
+      setStart();
     }
   }, []);
 
