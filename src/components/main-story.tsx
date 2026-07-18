@@ -212,7 +212,7 @@ export function MainStory() {
           className="pointer-events-none absolute inset-0 z-20"
           aria-hidden={!showCoffee}
         >
-          {/* Desktop only: horizontal line from card toward the cup */}
+          {/* Desktop: horizontal line from card toward the cup */}
           <div
             className="absolute top-1/2 hidden h-px origin-left bg-amber shadow-[0_0_6px_rgba(232,149,74,0.5)] sm:block"
             aria-hidden="true"
@@ -224,7 +224,7 @@ export function MainStory() {
             }}
           />
 
-          {/* Info — lower on phone (near hands/cup); PC stays mid */}
+          {/* Info — lower on phone; PC stays mid */}
           <div
             className="pointer-events-auto absolute left-0 top-[70%] w-full max-w-[min(100%,22rem)] px-4 sm:left-6 sm:top-1/2 sm:px-0 md:left-10 lg:left-14"
             style={{
@@ -233,7 +233,18 @@ export function MainStory() {
               transition: "opacity 0.05s linear, transform 0.05s linear",
             }}
           >
-            <div className="site-panel p-5 sm:p-7">
+            {/*
+              Mobile: thin line UP to the cup (cup sits above the card in the video).
+              No arrowhead — same idea as desktop: a line that points at the drink.
+            */}
+            <div
+              className="absolute bottom-full left-1/2 mb-1 flex -translate-x-1/2 flex-col items-center sm:hidden"
+              aria-hidden="true"
+            >
+              <div className="h-11 w-px bg-gradient-to-b from-amber/15 via-amber to-amber shadow-[0_0_6px_rgba(232,149,74,0.5)]" />
+            </div>
+
+            <div className="site-panel relative p-5 sm:p-7">
               <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-amber/20 px-3 py-1 text-xs font-bold uppercase tracking-wider text-amber">
                 <Coffee size={14} aria-hidden="true" />
                 Напиток дня
@@ -248,18 +259,6 @@ export function MainStory() {
               <p className="mt-4 font-display text-xl font-semibold text-amber sm:text-2xl">
                 280 ₽
               </p>
-            </div>
-
-            {/* Mobile: arrow down from card toward the cup in the video */}
-            <div
-              className="mt-2 flex flex-col items-center sm:hidden"
-              aria-hidden="true"
-            >
-              <div className="h-9 w-px bg-gradient-to-b from-amber via-amber/80 to-amber/20 shadow-[0_0_8px_rgba(232,149,74,0.55)]" />
-              <div
-                className="h-0 w-0 border-x-[6px] border-t-[8px] border-x-transparent border-t-amber"
-                style={{ filter: "drop-shadow(0 0 4px rgba(232,149,74,0.55))" }}
-              />
             </div>
           </div>
         </div>
