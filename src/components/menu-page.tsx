@@ -49,8 +49,8 @@ export function MenuPage() {
               viewport={{ once: true, margin: "-40px" }}
               transition={{ delay: Math.min(i * 0.04, 0.28), duration: 0.35 }}
               onClick={() => openItem(item)}
-              className={`site-panel group flex w-full flex-col overflow-hidden text-left transition hover:-translate-y-0.5 hover:ring-1 hover:ring-amber/35 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber ${
-                item.featured ? "ring-1 ring-amber/40" : ""
+              className={`site-panel menu-card group flex w-full flex-col overflow-hidden text-left ${
+                item.featured ? "menu-card-glow" : ""
               }`}
             >
               <div className="relative h-44 w-full overflow-hidden bg-[#2a241c] sm:h-52">

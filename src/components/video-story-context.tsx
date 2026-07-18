@@ -52,6 +52,8 @@ export function VideoStoryProvider({ children }: { children: React.ReactNode }) 
     videoRef.current = el;
     if (el) {
       el.pause();
+      el.muted = true;
+      el.playsInline = true;
       const setStart = () => {
         try {
           el.currentTime = VIDEO_MARKS.plan1;

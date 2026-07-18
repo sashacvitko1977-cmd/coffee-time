@@ -66,6 +66,72 @@ body {
   -webkit-backdrop-filter: blur(18px);
 }
 
+/*
+ * Menu cards: smooth amber glow that ramps in on hover/focus and
+ * stays lit until the pointer leaves (no flash / pulse).
+ * Real hover only on fine pointers — avoids sticky flash while scrolling on phones.
+ */
+.menu-card {
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+  transition:
+    box-shadow 0.45s ease,
+    border-color 0.45s ease,
+    transform 0.45s ease,
+    background-color 0.45s ease;
+}
+
+.menu-card-glow {
+  border-color: rgba(232, 149, 74, 0.55);
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 0 0 1px rgba(232, 149, 74, 0.4),
+    0 0 22px rgba(232, 149, 74, 0.38),
+    0 0 48px rgba(232, 149, 74, 0.2),
+    0 18px 50px rgba(0, 0, 0, 0.28);
+  transform: translateY(-2px);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .menu-card:hover {
+    border-color: rgba(232, 149, 74, 0.55);
+    background: rgba(255, 255, 255, 0.16);
+    box-shadow:
+      0 0 0 1px rgba(232, 149, 74, 0.4),
+      0 0 22px rgba(232, 149, 74, 0.38),
+      0 0 48px rgba(232, 149, 74, 0.2),
+      0 18px 50px rgba(0, 0, 0, 0.28);
+    transform: translateY(-2px);
+  }
+}
+
+/* Keyboard / intentional focus: same steady glow */
+.menu-card:focus-visible {
+  border-color: rgba(232, 149, 74, 0.55);
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 0 0 1px rgba(232, 149, 74, 0.4),
+    0 0 22px rgba(232, 149, 74, 0.38),
+    0 0 48px rgba(232, 149, 74, 0.2),
+    0 18px 50px rgba(0, 0, 0, 0.28);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+/* Touch: hold while finger is down */
+@media (hover: none) {
+  .menu-card:active {
+    border-color: rgba(232, 149, 74, 0.55);
+    background: rgba(255, 255, 255, 0.16);
+    box-shadow:
+      0 0 0 1px rgba(232, 149, 74, 0.4),
+      0 0 22px rgba(232, 149, 74, 0.38),
+      0 0 48px rgba(232, 149, 74, 0.2),
+      0 18px 50px rgba(0, 0, 0, 0.28);
+    transform: translateY(-2px);
+  }
+}
+
 .site-text-muted {
   color: rgba(245, 241, 235, 0.72);
 }
